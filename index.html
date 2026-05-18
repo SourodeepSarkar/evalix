@@ -1,44 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
-    <meta charset="UTF-8" />
+<meta charset="UTF-8" />
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0" />
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0" />
 
-    <title>
-        Mock Test Evaluator
-    </title>
+<title>
+    Mock Test Evaluator
+</title>
 
-    <link
-        rel="stylesheet"
-        href="styles.css" />
+<link
+    rel="stylesheet"
+    href="styles.css" />
 
 </head>
 
 <body>
+
+<div class="floating-timer hidden" id="floatingTimer">
+
+    <div class="timer-main">
+
+        <span id="timerText">
+            00:00
+        </span>
+
+    </div>
+
+    <div class="timer-controls">
+
+        <button id="pauseTimerBtn">
+            Pause
+        </button>
+
+    </div>
+
+</div>
 
 <div class="container">
 
     <header class="hero">
 
         <div>
+
             <h1>
                 Mock Test Evaluator
             </h1>
 
             <p>
-                Paste answer key → Attempt test → Auto evaluate
+                PDF + MCQ workspace with auto evaluation
             </p>
-        </div>
-
-        <div
-            id="timerBox"
-            class="timer hidden">
-
-            00:00
 
         </div>
 
@@ -49,14 +64,14 @@
         id="setupPanel">
 
         <h2>
-    Answer Key Input
-</h2>
+            Setup Test
+        </h2>
 
-<div class="format-box">
+        <div class="format-box">
 
-    <span class="format-title">
-        Required Format
-    </span>
+            <span class="format-title">
+                Required Answer Key Format
+            </span>
 
 <pre>
 Q1 (C)
@@ -64,7 +79,20 @@ Q2 (B)
 Q3 (A)
 </pre>
 
-</div>
+        </div>
+
+        <div class="pdf-upload">
+
+            <label>
+                Upload Question PDF
+            </label>
+
+            <input
+                type="file"
+                id="pdfInput"
+                accept="application/pdf" />
+
+        </div>
 
         <textarea
             id="answerKey"
@@ -127,61 +155,79 @@ Q3 (A)
         </div>
 
         <button id="generateBtn">
-            Generate Test
+            Start Test
         </button>
 
     </section>
 
     <section
-        id="questionsPanel"
-        class="questions-panel hidden">
+        id="workspace"
+        class="workspace hidden">
 
-        <div class="questions-header">
+        <div class="pdf-panel">
 
-            <div>
+            <div class="panel-header">
 
                 <h2>
-                    Questions
+                    Question Paper
                 </h2>
 
-                <div
-                    id="statsBar"
-                    class="stats-bar">
+            </div>
 
-                    Attempted:
-                    <span id="attemptedCount">
-                        0
-                    </span>
+            <iframe
+                id="pdfViewer">
+            </iframe>
 
-                    /
+        </div>
 
-                    <span id="totalCount">
-                        0
-                    </span>
+        <div class="mcq-panel">
+
+            <div class="questions-header">
+
+                <div>
+
+                    <h2>
+                        Questions
+                    </h2>
+
+                    <div class="stats-bar">
+
+                        Attempted:
+                        <span id="attemptedCount">
+                            0
+                        </span>
+
+                        /
+
+                        <span id="totalCount">
+                            0
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <div class="question-actions">
+
+                    <button id="submitBtn">
+                        Submit
+                    </button>
+
+                    <button
+                        id="resetBtn"
+                        class="secondary">
+
+                        Reset
+
+                    </button>
 
                 </div>
 
             </div>
 
-            <div class="question-actions">
-
-                <button id="submitBtn">
-                    Submit Test
-                </button>
-
-                <button
-                    id="resetBtn"
-                    class="secondary">
-
-                    Reset
-
-                </button>
-
-            </div>
+            <div id="questionsContainer"></div>
 
         </div>
-
-        <div id="questionsContainer"></div>
 
     </section>
 
@@ -196,6 +242,7 @@ Q3 (A)
         <div class="result-grid">
 
             <div class="result-card">
+
                 <span class="label">
                     Score
                 </span>
@@ -203,11 +250,15 @@ Q3 (A)
                 <span
                     class="value"
                     id="scoreValue">
+
                     0
+
                 </span>
+
             </div>
 
             <div class="result-card">
+
                 <span class="label">
                     Correct
                 </span>
@@ -215,11 +266,15 @@ Q3 (A)
                 <span
                     class="value"
                     id="correctValue">
+
                     0
+
                 </span>
+
             </div>
 
             <div class="result-card">
+
                 <span class="label">
                     Wrong
                 </span>
@@ -227,11 +282,15 @@ Q3 (A)
                 <span
                     class="value"
                     id="wrongValue">
+
                     0
+
                 </span>
+
             </div>
 
             <div class="result-card">
+
                 <span class="label">
                     Skipped
                 </span>
@@ -239,11 +298,15 @@ Q3 (A)
                 <span
                     class="value"
                     id="skipValue">
+
                     0
+
                 </span>
+
             </div>
 
             <div class="result-card">
+
                 <span class="label">
                     Accuracy
                 </span>
@@ -251,8 +314,11 @@ Q3 (A)
                 <span
                     class="value"
                     id="accuracyValue">
+
                     0%
+
                 </span>
+
             </div>
 
         </div>
@@ -272,29 +338,51 @@ const submitBtn =
 const resetBtn =
     document.getElementById("resetBtn");
 
-const questionsContainer =
-    document.getElementById("questionsContainer");
+const pauseTimerBtn =
+    document.getElementById("pauseTimerBtn");
 
-const questionsPanel =
-    document.getElementById("questionsPanel");
+const pdfInput =
+    document.getElementById("pdfInput");
 
-const resultPanel =
-    document.getElementById("resultPanel");
+const pdfViewer =
+    document.getElementById("pdfViewer");
+
+const workspace =
+    document.getElementById("workspace");
 
 const setupPanel =
     document.getElementById("setupPanel");
 
-const timerBox =
-    document.getElementById("timerBox");
+const floatingTimer =
+    document.getElementById("floatingTimer");
 
 let answerMap = {};
 let userAnswers = {};
 
 let timerInterval;
 let remainingSeconds = 0;
-let submitted = false;
 
-generateBtn.addEventListener("click", () => {
+let submitted = false;
+let timerPaused = false;
+
+pdfInput.addEventListener(
+    "change",
+    e => {
+
+    const file =
+        e.target.files[0];
+
+    if (!file) return;
+
+    const url =
+        URL.createObjectURL(file);
+
+    pdfViewer.src = url;
+});
+
+generateBtn.addEventListener(
+    "click",
+    () => {
 
     const raw =
         document
@@ -322,7 +410,7 @@ generateBtn.addEventListener("click", () => {
     ) {
 
         alert(
-            "No valid answer key detected."
+            "Invalid answer key."
         );
 
         return;
@@ -330,23 +418,36 @@ generateBtn.addEventListener("click", () => {
 
     generateQuestions();
 
-    setupPanel.classList.add("hidden");
+    setupPanel.classList.add(
+        "hidden"
+    );
+
+    workspace.classList.remove(
+        "hidden"
+    );
+
+    floatingTimer.classList.remove(
+        "hidden"
+    );
 
     startTimer();
 });
 
 function generateQuestions() {
 
-    questionsContainer.innerHTML = "";
+    const container =
+        document.getElementById(
+            "questionsContainer"
+        );
+
+    container.innerHTML = "";
 
     userAnswers = {};
-
-    submitted = false;
 
     const sortedQuestions =
         Object.keys(answerMap)
         .map(Number)
-        .sort((a,b) => a-b);
+        .sort((a,b)=>a-b);
 
     document.getElementById(
         "totalCount"
@@ -361,13 +462,19 @@ function generateQuestions() {
         card.className =
             "question-card";
 
+        card.dataset.question =
+            qNo;
+
         card.innerHTML = `
             <h3>Q${qNo}</h3>
+
             <div class="options">
+
                 <button class="option-btn">A</button>
                 <button class="option-btn">B</button>
                 <button class="option-btn">C</button>
                 <button class="option-btn">D</button>
+
             </div>
         `;
 
@@ -384,6 +491,25 @@ function generateQuestions() {
 
                 if (submitted) return;
 
+                const current =
+                    userAnswers[qNo];
+
+                if (
+                    current ===
+                    btn.textContent
+                ) {
+
+                    delete userAnswers[qNo];
+
+                    btn.classList.remove(
+                        "selected"
+                    );
+
+                    updateStats();
+
+                    return;
+                }
+
                 userAnswers[qNo] =
                     btn.textContent;
 
@@ -399,15 +525,10 @@ function generateQuestions() {
 
                 updateStats();
             });
-
         });
 
-        questionsContainer
-            .appendChild(card);
+        container.appendChild(card);
     });
-
-    questionsPanel
-        .classList.remove("hidden");
 }
 
 function updateStats() {
@@ -430,16 +551,14 @@ function startTimer() {
     remainingSeconds =
         mins * 60;
 
-    timerBox.classList.remove(
-        "hidden"
-    );
-
     updateTimerDisplay();
 
     clearInterval(timerInterval);
 
     timerInterval =
         setInterval(() => {
+
+        if (timerPaused) return;
 
         remainingSeconds--;
 
@@ -454,14 +573,27 @@ function startTimer() {
             );
 
             alert(
-                "Time is up. Auto-submitting."
+                "Time ended. Auto submitting."
             );
 
             submitTest();
         }
 
-    }, 1000);
+    },1000);
 }
+
+pauseTimerBtn.addEventListener(
+    "click",
+    () => {
+
+    timerPaused =
+        !timerPaused;
+
+    pauseTimerBtn.textContent =
+        timerPaused
+        ? "Resume"
+        : "Pause";
+});
 
 function updateTimerDisplay() {
 
@@ -473,7 +605,9 @@ function updateTimerDisplay() {
     const secs =
         remainingSeconds % 60;
 
-    timerBox.textContent =
+    document.getElementById(
+        "timerText"
+    ).textContent =
         `${String(mins).padStart(2,"0")}:${String(secs).padStart(2,"0")}`;
 }
 
@@ -526,13 +660,20 @@ function submitTest() {
         const userAnswer =
             userAnswers[q];
 
+        const card =
+            document.querySelector(
+                `[data-question="${q}"]`
+            );
+
         if (!userAnswer) {
 
             skipped++;
 
             score += skipMarks;
 
-        } else if (
+        }
+
+        else if (
             userAnswer ===
             correctAnswer
         ) {
@@ -541,11 +682,17 @@ function submitTest() {
 
             score += correctMarks;
 
-        } else {
+        }
+
+        else {
 
             wrong++;
 
             score += wrongMarks;
+
+            card.classList.add(
+                "wrong-glow"
+            );
         }
     });
 
@@ -585,15 +732,11 @@ function submitTest() {
 
     highlightAnswers();
 
-    resultPanel
-        .classList.remove("hidden");
-
-    window.scrollTo({
-        top:
-            resultPanel.offsetTop,
-        behavior:
-            "smooth"
-    });
+    document.getElementById(
+        "resultPanel"
+    ).classList.remove(
+        "hidden"
+    );
 }
 
 function highlightAnswers() {
@@ -603,12 +746,10 @@ function highlightAnswers() {
             ".question-card"
         );
 
-    cards.forEach((card,index)=>{
+    cards.forEach(card => {
 
         const qNo =
-            Object.keys(answerMap)
-            .map(Number)
-            .sort((a,b)=>a-b)[index];
+            card.dataset.question;
 
         const correctAnswer =
             answerMap[qNo];
@@ -653,37 +794,7 @@ resetBtn.addEventListener(
     "click",
     () => {
 
-    if (
-        !confirm(
-            "Reset all answers?"
-        )
-    ) return;
-
-    userAnswers = {};
-
-    submitted = false;
-
-    document
-    .querySelectorAll(
-        ".option-btn"
-    )
-    .forEach(btn => {
-
-        btn.disabled = false;
-
-        btn.classList.remove(
-            "selected",
-            "correct",
-            "wrong"
-        );
-    });
-
-    updateStats();
-
-    resultPanel
-        .classList.add(
-            "hidden"
-        );
+    location.reload();
 });
 
 </script>
