@@ -166,19 +166,37 @@ Q3 (A)
 
         <div class="pdf-panel">
 
-            <div class="panel-header">
+    <div class="panel-header pdf-toolbar">
 
-                <h2>
-                    Question Paper
-                </h2>
+        <h2>
+            Question Paper
+        </h2>
 
-            </div>
+        <div class="pdf-controls">
 
-            <iframe
-                id="pdfViewer">
-            </iframe>
+            <button id="zoomOutBtn">
+                −
+            </button>
+
+            <span id="zoomLevel">
+                100%
+            </span>
+
+            <button id="zoomInBtn">
+                +
+            </button>
 
         </div>
+
+    </div>
+
+    <div id="pdfContainer">
+
+        <canvas id="pdfCanvas"></canvas>
+
+    </div>
+
+</div>
 
         <div class="mcq-panel">
 
@@ -344,9 +362,6 @@ const pauseTimerBtn =
 const pdfInput =
     document.getElementById("pdfInput");
 
-const pdfViewer =
-    document.getElementById("pdfViewer");
-
 const workspace =
     document.getElementById("workspace");
 
@@ -365,19 +380,229 @@ let remainingSeconds = 0;
 let submitted = false;
 let timerPaused = false;
 
+let pdfDoc = null;
+
+let currentPage = 1;
+
+let currentScale = 1.2;
+
+let totalPages = 1;
+
+const pdfCanvas =
+    document.getElementById("pdfCanvas");
+
+const pdfCtx =
+    pdfCanvas.getContext("2d");
+
+const pdfContainer =
+    document.getElementById("pdfContainer");
+
+const zoomLevel =
+    document.getElementById("zoomLevel");
+
+const zoomInBtn =
+    document.getElementById("zoomInBtn");
+
+const zoomOutBtn =
+    document.getElementById("zoomOutBtn");
+
 pdfInput.addEventListener(
     "change",
-    e => {
+    async e => {
 
     const file =
         e.target.files[0];
 
     if (!file) return;
 
-    const url =
-        URL.createObjectURL(file);
+    const fileReader =
+        new FileReader();
 
-    pdfViewer.src = url;
+    fileReader.onload =
+        async function() {
+
+        const typedArray =
+            new Uint8Array(
+                this.result
+            );
+
+        pdfDoc =
+            await pdfjsLib
+            .getDocument(
+                typedArray
+            ).promise;
+totalPages = pdfDoc.numPages;
+
+        renderAllPages();
+    };
+
+    fileReader.readAsArrayBuffer(file);
+});
+
+async function renderAllPages() {
+
+    pdfContainer.innerHTML = "";
+
+    for (
+        let pageNum = 1;
+        pageNum <= totalPages;
+        pageNum++
+    ) {
+
+        const page =
+            await pdfDoc.getPage(pageNum);
+
+        const viewport =
+            page.getViewport({
+                scale: currentScale
+            });
+
+        const canvas =
+            document.createElement("canvas");
+
+        const ctx =
+            canvas.getContext("2d");
+
+        const pixelRatio =
+            window.devicePixelRatio || 1;
+
+        canvas.width =
+            viewport.width * pixelRatio;
+
+        canvas.height =
+            viewport.height * pixelRatio;
+
+        canvas.style.width =
+            `${viewport.width}px`;
+
+        canvas.style.height =
+            `${viewport.height}px`;
+
+        canvas.style.background =
+            "white";
+
+        canvas.style.borderRadius =
+            "10px";
+
+        canvas.style.boxShadow =
+            "0 10px 40px rgba(0,0,0,0.25)";
+
+        canvas.style.marginBottom =
+            "30px";
+
+        ctx.setTransform(
+            pixelRatio,
+            0,
+            0,
+            pixelRatio,
+            0,
+            0
+        );
+
+        await page.render({
+
+            canvasContext: ctx,
+            viewport: viewport
+
+        }).promise;
+
+        pdfContainer.appendChild(canvas);
+    }
+
+    zoomLevel.textContent =
+        `${Math.round(currentScale * 100)}%`;
+}
+
+zoomInBtn.addEventListener(
+    "click",
+    () => {
+
+    currentScale += 0.2;
+
+    renderAllPages();
+});
+
+zoomOutBtn.addEventListener(
+    "click",
+    () => {
+
+    if (currentScale <= 0.4)
+        return;
+
+    currentScale -= 0.2;
+
+    renderAllPages();
+});
+
+let isDragging = false;
+
+let startX, startY;
+
+let scrollLeft, scrollTop;
+
+pdfContainer.addEventListener(
+    "mousedown",
+    e => {
+
+    isDragging = true;
+
+    startX =
+        e.pageX -
+        pdfContainer.offsetLeft;
+
+    startY =
+        e.pageY -
+        pdfContainer.offsetTop;
+
+    scrollLeft =
+        pdfContainer.scrollLeft;
+
+    scrollTop =
+        pdfContainer.scrollTop;
+});
+
+pdfContainer.addEventListener(
+    "mouseleave",
+    () => {
+
+    isDragging = false;
+});
+
+pdfContainer.addEventListener(
+    "mouseup",
+    () => {
+
+    isDragging = false;
+});
+
+pdfContainer.addEventListener(
+    "mousemove",
+    e => {
+
+    if (!isDragging)
+        return;
+
+    e.preventDefault();
+
+    const x =
+        e.pageX -
+        pdfContainer.offsetLeft;
+
+    const y =
+        e.pageY -
+        pdfContainer.offsetTop;
+
+    const walkX =
+        (x - startX);
+
+    const walkY =
+        (y - startY);
+
+    pdfContainer.scrollLeft =
+        scrollLeft - walkX;
+
+    pdfContainer.scrollTop =
+        scrollTop - walkY;
 });
 
 generateBtn.addEventListener(
@@ -796,6 +1021,15 @@ resetBtn.addEventListener(
 
     location.reload();
 });
+
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+
+<script>
+
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
 
 </script>
 
