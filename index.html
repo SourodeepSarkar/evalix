@@ -7,21 +7,59 @@
 
 <meta
     name="viewport"
-    content="width=device-width, initial-scale=1.0" />
+    content="width=device-width, initial-scale=1.0"
+/>
+
+<meta
+    name="color-scheme"
+    content="light dark"
+/>
 
 <title>
-    Evalix - A Mock Test Evaluator
+    Evalix
 </title>
 
 <link
     rel="stylesheet"
-    href="styles.css" />
+    href="styles.css"
+/>
 
 </head>
 
 <body>
 
-<div class="floating-timer hidden" id="floatingTimer">
+<nav class="global-nav">
+
+    <div class="brand">
+
+        <span class="dot"></span>
+
+        Evalix
+
+    </div>
+
+    <div class="nav-links">
+
+        <a href="#setupPanel">
+            Setup
+        </a>
+
+        <a href="#workspace">
+            Workspace
+        </a>
+
+        <a href="#resultPanel">
+            Results
+        </a>
+
+    </div>
+
+</nav>
+
+<div
+    class="floating-timer hidden"
+    id="floatingTimer"
+>
 
     <div class="timer-main">
 
@@ -41,37 +79,122 @@
 
 </div>
 
-<div class="container">
+<div class="hero">
 
-    <header class="hero">
+    <div class="hero-content">
 
-        <div>
+        <div class="eyebrow">
 
-            <h1>
-                Evalix
-            </h1>
+            Professional PDF Evaluation Workspace
+
+        </div>
+
+        <h1>
+
+            Structured testing.
+            Instant evaluation.
+
+        </h1>
+
+        <p>
+
+            Evalix combines PDF-based mock testing,
+            live timer management,
+            answer tracking,
+            and automated evaluation
+            inside a focused workspace
+            optimized for deep exam practice.
+
+        </p>
+
+        <div class="hero-buttons">
+
+            <a
+                href="#setupPanel"
+                class="primary"
+            >
+
+                Start Test
+
+            </a>
+
+            <a
+                href="#workspace"
+                class="secondary"
+            >
+
+                Explore Workspace
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <div class="hero-panel">
+
+        <div class="hero-panel-content">
+
+            <div class="hero-panel-label">
+
+                Evalix Workspace
+
+            </div>
+
+            <h3>
+
+                Full PDF + MCQ
+                evaluation environment.
+
+            </h3>
 
             <p>
-                PDF + MCQ workspace with auto evaluation
+
+                Built for BITSAT,
+                JEE,
+                CUET,
+                WBJEE,
+                and high-intensity
+                timed mock testing workflows.
+
             </p>
 
         </div>
 
-    </header>
+    </div>
 
-    <section
-        class="panel"
-        id="setupPanel">
+</div>
+
+<div class="container">
+
+<section
+    class="panel"
+    id="setupPanel"
+>
+
+    <div class="section-header">
+
+        <div class="section-label">
+
+            Test Setup
+
+        </div>
 
         <h2>
-            Setup Test
+
+            Configure your mock test.
+
         </h2>
 
-        <div class="format-box">
+    </div>
 
-            <span class="format-title">
-                Required Answer Key Format
-            </span>
+    <div class="format-box">
+
+        <span class="format-title">
+
+            Required Answer Key Format
+
+        </span>
 
 <pre>
 Q1 (C)
@@ -79,962 +202,1006 @@ Q2 (B)
 Q3 (A)
 </pre>
 
-        </div>
+    </div>
 
-        <div class="pdf-upload">
+    <div class="pdf-upload">
+
+        <label>
+            Upload Question PDF
+        </label>
+
+        <input
+            type="file"
+            id="pdfInput"
+            accept="application/pdf"
+        />
+
+    </div>
+
+    <textarea
+        id="answerKey"
+        placeholder="Paste answer key here..."
+    ></textarea>
+
+    <div class="settings">
+
+        <div class="setting-card">
 
             <label>
-                Upload Question PDF
+                Correct Marks
             </label>
 
             <input
-                type="file"
-                id="pdfInput"
-                accept="application/pdf" />
+                type="number"
+                id="correctMarks"
+                value="4"
+            />
 
         </div>
 
-        <textarea
-            id="answerKey"
-            placeholder="Paste answer key here..."></textarea>
+        <div class="setting-card">
 
-        <div class="settings">
+            <label>
+                Wrong Marks
+            </label>
 
-            <div class="setting-card">
+            <input
+                type="number"
+                id="wrongMarks"
+                value="-1"
+            />
 
-                <label>
-                    Correct Marks
-                </label>
+        </div>
 
-                <input
-                    type="number"
-                    id="correctMarks"
-                    value="4" />
+        <div class="setting-card">
+
+            <label>
+                Unattempted Marks
+            </label>
+
+            <input
+                type="number"
+                id="skipMarks"
+                value="0"
+            />
+
+        </div>
+
+        <div class="setting-card">
+
+            <label>
+                Timer (Minutes)
+            </label>
+
+            <input
+                type="number"
+                id="timerMinutes"
+                value="60"
+            />
+
+        </div>
+
+    </div>
+
+    <button id="generateBtn">
+
+        Start Test
+
+    </button>
+
+</section>
+
+<section
+    id="workspace"
+    class="workspace hidden"
+>
+
+    <div class="pdf-panel">
+
+        <div class="panel-header pdf-toolbar">
+
+            <div>
+
+                <div class="section-label">
+                    PDF Workspace
+                </div>
+
+                <h2>
+                    Question Paper
+                </h2>
 
             </div>
 
-            <div class="setting-card">
+            <div class="pdf-controls">
 
-                <label>
-                    Wrong Marks
-                </label>
+                <button id="zoomOutBtn">
+                    −
+                </button>
 
-                <input
-                    type="number"
-                    id="wrongMarks"
-                    value="-1" />
+                <span id="zoomLevel">
+                    100%
+                </span>
 
-            </div>
-
-            <div class="setting-card">
-
-                <label>
-                    Unattempted Marks
-                </label>
-
-                <input
-                    type="number"
-                    id="skipMarks"
-                    value="0" />
-
-            </div>
-
-            <div class="setting-card">
-
-                <label>
-                    Timer (Minutes)
-                </label>
-
-                <input
-                    type="number"
-                    id="timerMinutes"
-                    value="60" />
+                <button id="zoomInBtn">
+                    +
+                </button>
 
             </div>
 
         </div>
 
-        <button id="generateBtn">
-            Start Test
-        </button>
+        <div id="pdfContainer">
 
-    </section>
+            <canvas id="pdfCanvas"></canvas>
 
-    <section
-        id="workspace"
-        class="workspace hidden">
+        </div>
 
-        <div class="pdf-panel">
+    </div>
 
-    <div class="panel-header pdf-toolbar">
+    <div class="mcq-panel">
+
+        <div class="questions-header">
+
+            <div>
+
+                <div class="section-label">
+                    MCQ Grid
+                </div>
+
+                <h2>
+                    Questions
+                </h2>
+
+                <div class="stats-bar">
+
+                    Attempted:
+                    <span id="attemptedCount">
+                        0
+                    </span>
+
+                    /
+
+                    <span id="totalCount">
+                        0
+                    </span>
+
+                </div>
+
+            </div>
+
+            <div class="question-actions">
+
+                <button id="submitBtn">
+                    Submit
+                </button>
+
+                <button
+                    id="resetBtn"
+                    class="secondary-btn"
+                >
+
+                    Reset
+
+                </button>
+
+            </div>
+
+        </div>
+
+        <div id="questionsContainer"></div>
+
+    </div>
+
+</section>
+
+<section
+    id="resultPanel"
+    class="result-panel hidden"
+>
+
+    <div class="section-header">
+
+        <div class="section-label">
+            Evaluation
+        </div>
 
         <h2>
-            Question Paper
+            Final Results
         </h2>
 
-        <div class="pdf-controls">
+    </div>
 
-            <button id="zoomOutBtn">
-                −
-            </button>
+    <div class="result-grid">
 
-            <span id="zoomLevel">
-                100%
+        <div class="result-card">
+
+            <span class="label">
+                Score
             </span>
 
-            <button id="zoomInBtn">
-                +
-            </button>
+            <span
+                class="value"
+                id="scoreValue"
+            >
+
+                0
+
+            </span>
+
+        </div>
+
+        <div class="result-card">
+
+            <span class="label">
+                Correct
+            </span>
+
+            <span
+                class="value"
+                id="correctValue"
+            >
+
+                0
+
+            </span>
+
+        </div>
+
+        <div class="result-card">
+
+            <span class="label">
+                Wrong
+            </span>
+
+            <span
+                class="value"
+                id="wrongValue"
+            >
+
+                0
+
+            </span>
+
+        </div>
+
+        <div class="result-card">
+
+            <span class="label">
+                Skipped
+            </span>
+
+            <span
+                class="value"
+                id="skipValue"
+            >
+
+                0
+
+            </span>
+
+        </div>
+
+        <div class="result-card">
+
+            <span class="label">
+                Accuracy
+            </span>
+
+            <span
+                class="value"
+                id="accuracyValue"
+            >
+
+                0%
+
+            </span>
 
         </div>
 
     </div>
 
-    <div id="pdfContainer">
-
-        <canvas id="pdfCanvas"></canvas>
-
-    </div>
-
-</div>
-
-        <div class="mcq-panel">
-
-            <div class="questions-header">
-
-                <div>
-
-                    <h2>
-                        Questions
-                    </h2>
-
-                    <div class="stats-bar">
-
-                        Attempted:
-                        <span id="attemptedCount">
-                            0
-                        </span>
-
-                        /
-
-                        <span id="totalCount">
-                            0
-                        </span>
-
-                    </div>
-
-                </div>
-
-                <div class="question-actions">
-
-                    <button id="submitBtn">
-                        Submit
-                    </button>
-
-                    <button
-                        id="resetBtn"
-                        class="secondary">
-
-                        Reset
-
-                    </button>
-
-                </div>
-
-            </div>
-
-            <div id="questionsContainer"></div>
-
-        </div>
-
-    </section>
-
-    <section
-        id="resultPanel"
-        class="result-panel hidden">
-
-        <h2>
-            Results
-        </h2>
-
-        <div class="result-grid">
-
-            <div class="result-card">
-
-                <span class="label">
-                    Score
-                </span>
-
-                <span
-                    class="value"
-                    id="scoreValue">
-
-                    0
-
-                </span>
-
-            </div>
-
-            <div class="result-card">
-
-                <span class="label">
-                    Correct
-                </span>
-
-                <span
-                    class="value"
-                    id="correctValue">
-
-                    0
-
-                </span>
-
-            </div>
-
-            <div class="result-card">
-
-                <span class="label">
-                    Wrong
-                </span>
-
-                <span
-                    class="value"
-                    id="wrongValue">
-
-                    0
-
-                </span>
-
-            </div>
-
-            <div class="result-card">
-
-                <span class="label">
-                    Skipped
-                </span>
-
-                <span
-                    class="value"
-                    id="skipValue">
-
-                    0
-
-                </span>
-
-            </div>
-
-            <div class="result-card">
-
-                <span class="label">
-                    Accuracy
-                </span>
-
-                <span
-                    class="value"
-                    id="accuracyValue">
-
-                    0%
-
-                </span>
-
-            </div>
-
-        </div>
-
-    </section>
-
-</div>
+</section>
 
 <footer>
-    Evalix · Professional PDF-based assessment workspace
+
+    <div>
+        © 2026 Evalix
+    </div>
+
+    <div>
+        Professional PDF assessment workspace
+    </div>
+
 </footer>
 
-<script>
-
-const generateBtn =
-    document.getElementById("generateBtn");
-
-const submitBtn =
-    document.getElementById("submitBtn");
-
-const resetBtn =
-    document.getElementById("resetBtn");
-
-const pauseTimerBtn =
-    document.getElementById("pauseTimerBtn");
-
-const pdfInput =
-    document.getElementById("pdfInput");
-
-const workspace =
-    document.getElementById("workspace");
-
-const setupPanel =
-    document.getElementById("setupPanel");
-
-const floatingTimer =
-    document.getElementById("floatingTimer");
-
-let answerMap = {};
-let userAnswers = {};
-
-let timerInterval;
-let remainingSeconds = 0;
-
-let submitted = false;
-let timerPaused = false;
-
-let pdfDoc = null;
-
-let currentPage = 1;
-
-let currentScale = 1.2;
-
-let totalPages = 1;
-
-const pdfCanvas =
-    document.getElementById("pdfCanvas");
-
-const pdfCtx =
-    pdfCanvas.getContext("2d");
-
-const pdfContainer =
-    document.getElementById("pdfContainer");
-
-const zoomLevel =
-    document.getElementById("zoomLevel");
-
-const zoomInBtn =
-    document.getElementById("zoomInBtn");
-
-const zoomOutBtn =
-    document.getElementById("zoomOutBtn");
-
-pdfInput.addEventListener(
-    "change",
-    async e => {
-
-    const file =
-        e.target.files[0];
-
-    if (!file) return;
-
-    const fileReader =
-        new FileReader();
-
-    fileReader.onload =
-        async function() {
-
-        const typedArray =
-            new Uint8Array(
-                this.result
-            );
-
-        pdfDoc =
-            await pdfjsLib
-            .getDocument(
-                typedArray
-            ).promise;
-totalPages = pdfDoc.numPages;
-
-        renderAllPages();
-    };
-
-    fileReader.readAsArrayBuffer(file);
-});
-
-async function renderAllPages() {
-
-    pdfContainer.innerHTML = "";
-
-    for (
-        let pageNum = 1;
-        pageNum <= totalPages;
-        pageNum++
-    ) {
-
-        const page =
-            await pdfDoc.getPage(pageNum);
-
-        const viewport =
-            page.getViewport({
-                scale: currentScale
-            });
-
-        const canvas =
-            document.createElement("canvas");
-
-        const ctx =
-            canvas.getContext("2d");
-
-        const pixelRatio =
-            window.devicePixelRatio || 1;
-
-        canvas.width =
-            viewport.width * pixelRatio;
-
-        canvas.height =
-            viewport.height * pixelRatio;
-
-        canvas.style.width =
-            `${viewport.width}px`;
-
-        canvas.style.height =
-            `${viewport.height}px`;
-
-        canvas.style.background =
-            "white";
-
-        canvas.style.borderRadius =
-            "10px";
-
-        canvas.style.boxShadow =
-            "0 10px 40px rgba(0,0,0,0.25)";
-
-        canvas.style.marginBottom =
-            "30px";
-
-        ctx.setTransform(
-            pixelRatio,
-            0,
-            0,
-            pixelRatio,
-            0,
-            0
-        );
-
-        await page.render({
-
-            canvasContext: ctx,
-            viewport: viewport
-
-        }).promise;
-
-        pdfContainer.appendChild(canvas);
-    }
-
-    zoomLevel.textContent =
-        `${Math.round(currentScale * 100)}%`;
-}
-
-zoomInBtn.addEventListener(
-    "click",
-    () => {
-
-    currentScale += 0.2;
-
-    renderAllPages();
-});
-
-zoomOutBtn.addEventListener(
-    "click",
-    () => {
-
-    if (currentScale <= 0.4)
-        return;
-
-    currentScale -= 0.2;
-
-    renderAllPages();
-});
-
-let isDragging = false;
-
-let startX, startY;
-
-let scrollLeft, scrollTop;
-
-pdfContainer.addEventListener(
-    "mousedown",
-    e => {
-
-    isDragging = true;
-
-    startX =
-        e.pageX -
-        pdfContainer.offsetLeft;
-
-    startY =
-        e.pageY -
-        pdfContainer.offsetTop;
-
-    scrollLeft =
-        pdfContainer.scrollLeft;
-
-    scrollTop =
-        pdfContainer.scrollTop;
-});
-
-pdfContainer.addEventListener(
-    "mouseleave",
-    () => {
-
-    isDragging = false;
-});
-
-pdfContainer.addEventListener(
-    "mouseup",
-    () => {
-
-    isDragging = false;
-});
-
-pdfContainer.addEventListener(
-    "mousemove",
-    e => {
-
-    if (!isDragging)
-        return;
-
-    e.preventDefault();
-
-    const x =
-        e.pageX -
-        pdfContainer.offsetLeft;
-
-    const y =
-        e.pageY -
-        pdfContainer.offsetTop;
-
-    const walkX =
-        (x - startX);
-
-    const walkY =
-        (y - startY);
-
-    pdfContainer.scrollLeft =
-        scrollLeft - walkX;
-
-    pdfContainer.scrollTop =
-        scrollTop - walkY;
-});
-
-generateBtn.addEventListener(
-    "click",
-    () => {
-
-    const raw =
-        document
-        .getElementById("answerKey")
-        .value;
-
-    const regex =
-        /Q\s*(\d+)\s*\(?([A-D])\)?/gi;
-
-    answerMap = {};
-
-    let match;
-
-    while (
-        (match = regex.exec(raw)) !== null
-    ) {
-
-        answerMap[
-            parseInt(match[1])
-        ] = match[2].toUpperCase();
-    }
-
-    if (
-        Object.keys(answerMap).length === 0
-    ) {
-
-        alert(
-            "Invalid answer key."
-        );
-
-        return;
-    }
-
-    generateQuestions();
-
-    setupPanel.classList.add(
-        "hidden"
-    );
-
-    workspace.classList.remove(
-        "hidden"
-    );
-
-    floatingTimer.classList.remove(
-        "hidden"
-    );
-
-    startTimer();
-});
-
-function generateQuestions() {
-
-    const container =
-        document.getElementById(
-            "questionsContainer"
-        );
-
-    container.innerHTML = "";
-
-    userAnswers = {};
-
-    const sortedQuestions =
-        Object.keys(answerMap)
-        .map(Number)
-        .sort((a,b)=>a-b);
-
-    document.getElementById(
-        "totalCount"
-    ).textContent =
-        sortedQuestions.length;
-
-    sortedQuestions.forEach(qNo => {
-
-        const card =
-            document.createElement("div");
-
-        card.className =
-            "question-card";
-
-        card.dataset.question =
-            qNo;
-
-        card.innerHTML = `
-            <h3>Q${qNo}</h3>
-
-            <div class="options">
-
-                <button class="option-btn">A</button>
-                <button class="option-btn">B</button>
-                <button class="option-btn">C</button>
-                <button class="option-btn">D</button>
-
-            </div>
-        `;
-
-        const buttons =
-            card.querySelectorAll(
-                ".option-btn"
-            );
-
-        buttons.forEach(btn => {
-
-            btn.addEventListener(
-                "click",
-                () => {
-
-                if (submitted) return;
-
-                const current =
-                    userAnswers[qNo];
-
-                if (
-                    current ===
-                    btn.textContent
-                ) {
-
-                    delete userAnswers[qNo];
-
-                    btn.classList.remove(
-                        "selected"
-                    );
-
-                    updateStats();
-
-                    return;
-                }
-
-                userAnswers[qNo] =
-                    btn.textContent;
-
-                buttons.forEach(b =>
-                    b.classList.remove(
-                        "selected"
-                    )
-                );
-
-                btn.classList.add(
-                    "selected"
-                );
-
-                updateStats();
-            });
-        });
-
-        container.appendChild(card);
-    });
-}
-
-function updateStats() {
-
-    document.getElementById(
-        "attemptedCount"
-    ).textContent =
-        Object.keys(userAnswers).length;
-}
-
-function startTimer() {
-
-    const mins =
-        parseInt(
-            document.getElementById(
-                "timerMinutes"
-            ).value
-        );
-
-    remainingSeconds =
-        mins * 60;
-
-    updateTimerDisplay();
-
-    clearInterval(timerInterval);
-
-    timerInterval =
-        setInterval(() => {
-
-        if (timerPaused) return;
-
-        remainingSeconds--;
-
-        updateTimerDisplay();
-
-        if (
-            remainingSeconds <= 0
-        ) {
-
-            clearInterval(
-                timerInterval
-            );
-
-            alert(
-                "Time ended. Auto submitting."
-            );
-
-            submitTest();
-        }
-
-    },1000);
-}
-
-pauseTimerBtn.addEventListener(
-    "click",
-    () => {
-
-    timerPaused =
-        !timerPaused;
-
-    pauseTimerBtn.textContent =
-        timerPaused
-        ? "Resume"
-        : "Pause";
-});
-
-function updateTimerDisplay() {
-
-    const mins =
-        Math.floor(
-            remainingSeconds / 60
-        );
-
-    const secs =
-        remainingSeconds % 60;
-
-    document.getElementById(
-        "timerText"
-    ).textContent =
-        `${String(mins).padStart(2,"0")}:${String(secs).padStart(2,"0")}`;
-}
-
-submitBtn.addEventListener(
-    "click",
-    submitTest
-);
-
-function submitTest() {
-
-    if (submitted) return;
-
-    submitted = true;
-
-    clearInterval(timerInterval);
-
-    const correctMarks =
-        parseFloat(
-            document.getElementById(
-                "correctMarks"
-            ).value
-        );
-
-    const wrongMarks =
-        parseFloat(
-            document.getElementById(
-                "wrongMarks"
-            ).value
-        );
-
-    const skipMarks =
-        parseFloat(
-            document.getElementById(
-                "skipMarks"
-            ).value
-        );
-
-    let score = 0;
-
-    let correct = 0;
-    let wrong = 0;
-    let skipped = 0;
-
-    Object.keys(answerMap)
-    .forEach(q => {
-
-        const correctAnswer =
-            answerMap[q];
-
-        const userAnswer =
-            userAnswers[q];
-
-        const card =
-            document.querySelector(
-                `[data-question="${q}"]`
-            );
-
-        if (!userAnswer) {
-
-            skipped++;
-
-            score += skipMarks;
-
-        }
-
-        else if (
-            userAnswer ===
-            correctAnswer
-        ) {
-
-            correct++;
-
-            score += correctMarks;
-
-        }
-
-        else {
-
-            wrong++;
-
-            score += wrongMarks;
-
-            card.classList.add(
-                "wrong-glow"
-            );
-        }
-    });
-
-    const attempted =
-        correct + wrong;
-
-    const accuracy =
-        attempted === 0
-        ? 0
-        : (
-            (
-                correct /
-                attempted
-            ) * 100
-        ).toFixed(2);
-
-    document.getElementById(
-        "scoreValue"
-    ).textContent = score;
-
-    document.getElementById(
-        "correctValue"
-    ).textContent = correct;
-
-    document.getElementById(
-        "wrongValue"
-    ).textContent = wrong;
-
-    document.getElementById(
-        "skipValue"
-    ).textContent = skipped;
-
-    document.getElementById(
-        "accuracyValue"
-    ).textContent =
-        `${accuracy}%`;
-
-    highlightAnswers();
-
-    document.getElementById(
-        "resultPanel"
-    ).classList.remove(
-        "hidden"
-    );
-}
-
-function highlightAnswers() {
-
-    const cards =
-        document.querySelectorAll(
-            ".question-card"
-        );
-
-    cards.forEach(card => {
-
-        const qNo =
-            card.dataset.question;
-
-        const correctAnswer =
-            answerMap[qNo];
-
-        const buttons =
-            card.querySelectorAll(
-                ".option-btn"
-            );
-
-        buttons.forEach(btn => {
-
-            const val =
-                btn.textContent;
-
-            btn.disabled = true;
-
-            if (
-                val ===
-                correctAnswer
-            ) {
-                btn.classList.add(
-                    "correct"
-                );
-            }
-
-            if (
-                val ===
-                userAnswers[qNo]
-                &&
-                val !==
-                correctAnswer
-            ) {
-                btn.classList.add(
-                    "wrong"
-                );
-            }
-        });
-    });
-}
-
-resetBtn.addEventListener(
-    "click",
-    () => {
-
-    location.reload();
-});
-
-</script>
+</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 
 <script>
 
 pdfjsLib.GlobalWorkerOptions.workerSrc =
-    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
+"https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
 
+</script>
+
+<script>
+
+    const generateBtn =
+        document.getElementById("generateBtn");
+    
+    const submitBtn =
+        document.getElementById("submitBtn");
+    
+    const resetBtn =
+        document.getElementById("resetBtn");
+    
+    const pauseTimerBtn =
+        document.getElementById("pauseTimerBtn");
+    
+    const pdfInput =
+        document.getElementById("pdfInput");
+    
+    const workspace =
+        document.getElementById("workspace");
+    
+    const setupPanel =
+        document.getElementById("setupPanel");
+    
+    const floatingTimer =
+        document.getElementById("floatingTimer");
+    
+    let answerMap = {};
+    let userAnswers = {};
+    
+    let timerInterval;
+    let remainingSeconds = 0;
+    
+    let submitted = false;
+    let timerPaused = false;
+    
+    let pdfDoc = null;
+    
+    let currentPage = 1;
+    
+    let currentScale = 1.2;
+    
+    let totalPages = 1;
+    
+    const pdfCanvas =
+        document.getElementById("pdfCanvas");
+    
+    const pdfCtx =
+        pdfCanvas.getContext("2d");
+    
+    const pdfContainer =
+        document.getElementById("pdfContainer");
+    
+    const zoomLevel =
+        document.getElementById("zoomLevel");
+    
+    const zoomInBtn =
+        document.getElementById("zoomInBtn");
+    
+    const zoomOutBtn =
+        document.getElementById("zoomOutBtn");
+    
+    pdfInput.addEventListener(
+        "change",
+        async e => {
+    
+        const file =
+            e.target.files[0];
+    
+        if (!file) return;
+    
+        const fileReader =
+            new FileReader();
+    
+        fileReader.onload =
+            async function() {
+    
+            const typedArray =
+                new Uint8Array(
+                    this.result
+                );
+    
+            pdfDoc =
+                await pdfjsLib
+                .getDocument(
+                    typedArray
+                ).promise;
+    totalPages = pdfDoc.numPages;
+    
+            renderAllPages();
+        };
+    
+        fileReader.readAsArrayBuffer(file);
+    });
+    
+    async function renderAllPages() {
+    
+        pdfContainer.innerHTML = "";
+    
+        for (
+            let pageNum = 1;
+            pageNum <= totalPages;
+            pageNum++
+        ) {
+    
+            const page =
+                await pdfDoc.getPage(pageNum);
+    
+            const viewport =
+                page.getViewport({
+                    scale: currentScale
+                });
+    
+            const canvas =
+                document.createElement("canvas");
+    
+            const ctx =
+                canvas.getContext("2d");
+    
+            const pixelRatio =
+                window.devicePixelRatio || 1;
+    
+            canvas.width =
+                viewport.width * pixelRatio;
+    
+            canvas.height =
+                viewport.height * pixelRatio;
+    
+            canvas.style.width =
+                `${viewport.width}px`;
+    
+            canvas.style.height =
+                `${viewport.height}px`;
+    
+            canvas.style.background =
+                "white";
+    
+            canvas.style.borderRadius =
+                "10px";
+    
+            canvas.style.boxShadow =
+                "0 10px 40px rgba(0,0,0,0.25)";
+    
+            canvas.style.marginBottom =
+                "30px";
+    
+            ctx.setTransform(
+                pixelRatio,
+                0,
+                0,
+                pixelRatio,
+                0,
+                0
+            );
+    
+            await page.render({
+    
+                canvasContext: ctx,
+                viewport: viewport
+    
+            }).promise;
+    
+            pdfContainer.appendChild(canvas);
+        }
+    
+        zoomLevel.textContent =
+            `${Math.round(currentScale * 100)}%`;
+    }
+    
+    zoomInBtn.addEventListener(
+        "click",
+        () => {
+    
+        currentScale += 0.2;
+    
+        renderAllPages();
+    });
+    
+    zoomOutBtn.addEventListener(
+        "click",
+        () => {
+    
+        if (currentScale <= 0.4)
+            return;
+    
+        currentScale -= 0.2;
+    
+        renderAllPages();
+    });
+    
+    let isDragging = false;
+    
+    let startX, startY;
+    
+    let scrollLeft, scrollTop;
+    
+    pdfContainer.addEventListener(
+        "mousedown",
+        e => {
+    
+        isDragging = true;
+    
+        startX =
+            e.pageX -
+            pdfContainer.offsetLeft;
+    
+        startY =
+            e.pageY -
+            pdfContainer.offsetTop;
+    
+        scrollLeft =
+            pdfContainer.scrollLeft;
+    
+        scrollTop =
+            pdfContainer.scrollTop;
+    });
+    
+    pdfContainer.addEventListener(
+        "mouseleave",
+        () => {
+    
+        isDragging = false;
+    });
+    
+    pdfContainer.addEventListener(
+        "mouseup",
+        () => {
+    
+        isDragging = false;
+    });
+    
+    pdfContainer.addEventListener(
+        "mousemove",
+        e => {
+    
+        if (!isDragging)
+            return;
+    
+        e.preventDefault();
+    
+        const x =
+            e.pageX -
+            pdfContainer.offsetLeft;
+    
+        const y =
+            e.pageY -
+            pdfContainer.offsetTop;
+    
+        const walkX =
+            (x - startX);
+    
+        const walkY =
+            (y - startY);
+    
+        pdfContainer.scrollLeft =
+            scrollLeft - walkX;
+    
+        pdfContainer.scrollTop =
+            scrollTop - walkY;
+    });
+    
+    generateBtn.addEventListener(
+        "click",
+        () => {
+    
+        const raw =
+            document
+            .getElementById("answerKey")
+            .value;
+    
+        const regex =
+            /Q\s*(\d+)\s*\(?([A-D])\)?/gi;
+    
+        answerMap = {};
+    
+        let match;
+    
+        while (
+            (match = regex.exec(raw)) !== null
+        ) {
+    
+            answerMap[
+                parseInt(match[1])
+            ] = match[2].toUpperCase();
+        }
+    
+        if (
+            Object.keys(answerMap).length === 0
+        ) {
+    
+            alert(
+                "Invalid answer key."
+            );
+    
+            return;
+        }
+    
+        generateQuestions();
+    
+        setupPanel.classList.add(
+            "hidden"
+        );
+    
+        workspace.classList.remove(
+            "hidden"
+        );
+    
+        floatingTimer.classList.remove(
+            "hidden"
+        );
+    
+        startTimer();
+    });
+    
+    function generateQuestions() {
+    
+        const container =
+            document.getElementById(
+                "questionsContainer"
+            );
+    
+        container.innerHTML = "";
+    
+        userAnswers = {};
+    
+        const sortedQuestions =
+            Object.keys(answerMap)
+            .map(Number)
+            .sort((a,b)=>a-b);
+    
+        document.getElementById(
+            "totalCount"
+        ).textContent =
+            sortedQuestions.length;
+    
+        sortedQuestions.forEach(qNo => {
+    
+            const card =
+                document.createElement("div");
+    
+            card.className =
+                "question-card";
+    
+            card.dataset.question =
+                qNo;
+    
+            card.innerHTML = `
+                <h3>Q${qNo}</h3>
+    
+                <div class="options">
+    
+                    <button class="option-btn">A</button>
+                    <button class="option-btn">B</button>
+                    <button class="option-btn">C</button>
+                    <button class="option-btn">D</button>
+    
+                </div>
+            `;
+    
+            const buttons =
+                card.querySelectorAll(
+                    ".option-btn"
+                );
+    
+            buttons.forEach(btn => {
+    
+                btn.addEventListener(
+                    "click",
+                    () => {
+    
+                    if (submitted) return;
+    
+                    const current =
+                        userAnswers[qNo];
+    
+                    if (
+                        current ===
+                        btn.textContent
+                    ) {
+    
+                        delete userAnswers[qNo];
+    
+                        btn.classList.remove(
+                            "selected"
+                        );
+    
+                        updateStats();
+    
+                        return;
+                    }
+    
+                    userAnswers[qNo] =
+                        btn.textContent;
+    
+                    buttons.forEach(b =>
+                        b.classList.remove(
+                            "selected"
+                        )
+                    );
+    
+                    btn.classList.add(
+                        "selected"
+                    );
+    
+                    updateStats();
+                });
+            });
+    
+            container.appendChild(card);
+        });
+    }
+    
+    function updateStats() {
+    
+        document.getElementById(
+            "attemptedCount"
+        ).textContent =
+            Object.keys(userAnswers).length;
+    }
+    
+    function startTimer() {
+    
+        const mins =
+            parseInt(
+                document.getElementById(
+                    "timerMinutes"
+                ).value
+            );
+    
+        remainingSeconds =
+            mins * 60;
+    
+        updateTimerDisplay();
+    
+        clearInterval(timerInterval);
+    
+        timerInterval =
+            setInterval(() => {
+    
+            if (timerPaused) return;
+    
+            remainingSeconds--;
+    
+            updateTimerDisplay();
+    
+            if (
+                remainingSeconds <= 0
+            ) {
+    
+                clearInterval(
+                    timerInterval
+                );
+    
+                alert(
+                    "Time ended. Auto submitting."
+                );
+    
+                submitTest();
+            }
+    
+        },1000);
+    }
+    
+    pauseTimerBtn.addEventListener(
+        "click",
+        () => {
+    
+        timerPaused =
+            !timerPaused;
+    
+        pauseTimerBtn.textContent =
+            timerPaused
+            ? "Resume"
+            : "Pause";
+    });
+    
+    function updateTimerDisplay() {
+    
+        const mins =
+            Math.floor(
+                remainingSeconds / 60
+            );
+    
+        const secs =
+            remainingSeconds % 60;
+    
+        document.getElementById(
+            "timerText"
+        ).textContent =
+            `${String(mins).padStart(2,"0")}:${String(secs).padStart(2,"0")}`;
+    }
+    
+    submitBtn.addEventListener(
+        "click",
+        submitTest
+    );
+    
+    function submitTest() {
+    
+        if (submitted) return;
+    
+        submitted = true;
+    
+        clearInterval(timerInterval);
+    
+        const correctMarks =
+            parseFloat(
+                document.getElementById(
+                    "correctMarks"
+                ).value
+            );
+    
+        const wrongMarks =
+            parseFloat(
+                document.getElementById(
+                    "wrongMarks"
+                ).value
+            );
+    
+        const skipMarks =
+            parseFloat(
+                document.getElementById(
+                    "skipMarks"
+                ).value
+            );
+    
+        let score = 0;
+    
+        let correct = 0;
+        let wrong = 0;
+        let skipped = 0;
+    
+        Object.keys(answerMap)
+        .forEach(q => {
+    
+            const correctAnswer =
+                answerMap[q];
+    
+            const userAnswer =
+                userAnswers[q];
+    
+            const card =
+                document.querySelector(
+                    `[data-question="${q}"]`
+                );
+    
+            if (!userAnswer) {
+    
+                skipped++;
+    
+                score += skipMarks;
+    
+            }
+    
+            else if (
+                userAnswer ===
+                correctAnswer
+            ) {
+    
+                correct++;
+    
+                score += correctMarks;
+    
+            }
+    
+            else {
+    
+                wrong++;
+    
+                score += wrongMarks;
+    
+                card.classList.add(
+                    "wrong-glow"
+                );
+            }
+        });
+    
+        const attempted =
+            correct + wrong;
+    
+        const accuracy =
+            attempted === 0
+            ? 0
+            : (
+                (
+                    correct /
+                    attempted
+                ) * 100
+            ).toFixed(2);
+    
+        document.getElementById(
+            "scoreValue"
+        ).textContent = score;
+    
+        document.getElementById(
+            "correctValue"
+        ).textContent = correct;
+    
+        document.getElementById(
+            "wrongValue"
+        ).textContent = wrong;
+    
+        document.getElementById(
+            "skipValue"
+        ).textContent = skipped;
+    
+        document.getElementById(
+            "accuracyValue"
+        ).textContent =
+            `${accuracy}%`;
+    
+        highlightAnswers();
+    
+        document.getElementById(
+            "resultPanel"
+        ).classList.remove(
+            "hidden"
+        );
+    }
+    
+    function highlightAnswers() {
+    
+        const cards =
+            document.querySelectorAll(
+                ".question-card"
+            );
+    
+        cards.forEach(card => {
+    
+            const qNo =
+                card.dataset.question;
+    
+            const correctAnswer =
+                answerMap[qNo];
+    
+            const buttons =
+                card.querySelectorAll(
+                    ".option-btn"
+                );
+    
+            buttons.forEach(btn => {
+    
+                const val =
+                    btn.textContent;
+    
+                btn.disabled = true;
+    
+                if (
+                    val ===
+                    correctAnswer
+                ) {
+                    btn.classList.add(
+                        "correct"
+                    );
+                }
+    
+                if (
+                    val ===
+                    userAnswers[qNo]
+                    &&
+                    val !==
+                    correctAnswer
+                ) {
+                    btn.classList.add(
+                        "wrong"
+                    );
+                }
+            });
+        });
+    }
+    
+    resetBtn.addEventListener(
+        "click",
+        () => {
+    
+        location.reload();
+    });
+    
 </script>
 
 </body>
