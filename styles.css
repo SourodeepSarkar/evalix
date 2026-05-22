@@ -78,6 +78,13 @@
 
         --canvas-shadow:
             0 24px 70px rgba(0,0,0,0.65);
+        --correct: rgba(34,197,94,0.18);
+
+        --correct-border: #22c55e;
+    
+        --wrong: rgba(239,68,68,0.18);
+    
+        --wrong-border: #ef4444;
     }
 }
 
@@ -1087,6 +1094,8 @@ button:active {
     background: var(--correct);
 
     border-color: var(--correct-border);
+
+    color: #4ade80;
 }
 
 .option-btn.wrong {
@@ -1094,6 +1103,14 @@ button:active {
     background: var(--wrong);
 
     border-color: var(--wrong-border);
+
+    color: #f87171;
+}
+
+.option-btn.correct,
+.option-btn.wrong {
+
+    font-weight: 800;
 }
 
 /* RESULTS */
@@ -1217,6 +1234,15 @@ button:active {
 
     box-shadow:
         0 0 28px rgba(239,68,68,0.22);
+}
+
+@media (prefers-color-scheme: dark) {
+
+    .wrong-glow {
+
+        box-shadow:
+            0 0 34px rgba(239,68,68,0.28);
+    }
 }
 
 /* FOOTER */
