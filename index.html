@@ -188,6 +188,8 @@
 
     </div>
 
+    <!--
+
     <div class="format-box">
 
         <span class="format-title">
@@ -196,13 +198,15 @@
 
         </span>
 
-<pre>
-Q1 (C)
-Q2 (B)
-Q3 (A)
-</pre>
+    <pre>
+    Q1 (C)
+    Q2 (B)
+    Q3 (A)
+    </pre>
 
     </div>
+
+-->
 
     <div class="pdf-upload">
 
@@ -793,21 +797,58 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
             document
             .getElementById("answerKey")
             .value;
+            parseAnswerKey(raw);
     
-        const regex =
-            /Q\s*(\d+)\s*\(?([A-D])\)?/gi;
-    
+            function parseAnswerKey(raw) {
+
         answerMap = {};
-    
+
+        raw = raw
+
+            // normalize unicode
+            .replace(/В/g, "B")
+            .replace(/С/g, "C")
+
+            // normalize separators
+            .replace(/[:\-]/g, " ")
+
+            // remove extra commas
+            .replace(/,+/g, ",")
+
+            // collapse spaces
+            .replace(/\s+/g, " ");
+
+        /*
+            Supports:
+
+            1. B
+            1 B
+            Q1 B
+            Q1 (B)
+            1) B
+            74.A,B
+            75 B,C,D
+        */
+
+        const regex =
+            /Q?\s*(\d+)\s*[.)]?\s*\(?([A-D](?:\s*,\s*[A-D])*)\)?/gi;
+
         let match;
-    
-        while (
-            (match = regex.exec(raw)) !== null
-        ) {
-    
-            answerMap[
-                parseInt(match[1])
-            ] = match[2].toUpperCase();
+
+        while ((match = regex.exec(raw)) !== null) {
+
+            const qNo =
+                parseInt(match[1]);
+
+            const answer =
+                match[2]
+                .replace(/\s/g, "")
+                .toUpperCase();
+
+            answerMap[qNo] = answer;
+        }
+
+        return answerMap;
         }
     
         if (
