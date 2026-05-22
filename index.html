@@ -555,329 +555,150 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
     const floatingTimer =
         document.getElementById("floatingTimer");
     
+    
+    
+    /*
+    ========================================
+    NEW DATA STRUCTURE
+    ========================================
+    */
+    
     let answerMap = {};
+    
+    /*
+    
+    answerMap structure:
+    
+    {
+        1: {
+            answers: ["B"],
+            type: "single",
+            correctMarks: 4,
+            wrongMarks: -1
+        },
+    
+        74: {
+            answers: ["A","B"],
+            type: "multiple",
+            correctMarks: 4,
+            wrongMarks: -2
+        }
+    }
+    
+    */
+    
     let userAnswers = {};
     
     let timerInterval;
+    
     let remainingSeconds = 0;
     
     let submitted = false;
+    
     let timerPaused = false;
     
-    let pdfDoc = null;
     
-    let currentPage = 1;
     
-    let currentScale = 1.2;
+    /*
+    ========================================
+    ANSWER KEY PARSER
+    ========================================
+    */
     
-    let totalPages = 1;
+    function parseAnswerKey(raw) {
     
-    const pdfCanvas =
-        document.getElementById("pdfCanvas");
-    
-    const pdfCtx =
-        pdfCanvas.getContext("2d");
-    
-    const pdfContainer =
-        document.getElementById("pdfContainer");
-    
-    const zoomLevel =
-        document.getElementById("zoomLevel");
-    
-    const zoomInBtn =
-        document.getElementById("zoomInBtn");
-    
-    const zoomOutBtn =
-        document.getElementById("zoomOutBtn");
-    
-    pdfInput.addEventListener(
-        "change",
-        async e => {
-    
-        const file =
-            e.target.files[0];
-    
-        if (!file) return;
-    
-        const fileReader =
-            new FileReader();
-    
-        fileReader.onload =
-            async function() {
-    
-            const typedArray =
-                new Uint8Array(
-                    this.result
-                );
-    
-            pdfDoc =
-                await pdfjsLib
-                .getDocument(
-                    typedArray
-                ).promise;
-    totalPages = pdfDoc.numPages;
-    
-            renderAllPages();
-        };
-    
-        fileReader.readAsArrayBuffer(file);
-    });
-    
-    async function renderAllPages() {
-    
-        pdfContainer.innerHTML = "";
-    
-        for (
-            let pageNum = 1;
-            pageNum <= totalPages;
-            pageNum++
-        ) {
-    
-            const page =
-                await pdfDoc.getPage(pageNum);
-    
-            const viewport =
-                page.getViewport({
-                    scale: currentScale
-                });
-    
-            const canvas =
-                document.createElement("canvas");
-    
-            const ctx =
-                canvas.getContext("2d");
-    
-            const pixelRatio =
-                window.devicePixelRatio || 1;
-    
-            canvas.width =
-                viewport.width * pixelRatio;
-    
-            canvas.height =
-                viewport.height * pixelRatio;
-    
-            canvas.style.width =
-                `${viewport.width}px`;
-    
-            canvas.style.height =
-                `${viewport.height}px`;
-    
-            canvas.style.background =
-                "white";
-    
-            canvas.style.borderRadius =
-                "10px";
-    
-            canvas.style.boxShadow =
-                "0 10px 40px rgba(0,0,0,0.25)";
-    
-            canvas.style.marginBottom =
-                "30px";
-    
-            ctx.setTransform(
-                pixelRatio,
-                0,
-                0,
-                pixelRatio,
-                0,
-                0
-            );
-    
-            await page.render({
-    
-                canvasContext: ctx,
-                viewport: viewport
-    
-            }).promise;
-    
-            pdfContainer.appendChild(canvas);
-        }
-    
-        zoomLevel.textContent =
-            `${Math.round(currentScale * 100)}%`;
-    }
-    
-    zoomInBtn.addEventListener(
-        "click",
-        () => {
-    
-        currentScale += 0.2;
-    
-        renderAllPages();
-    });
-    
-    zoomOutBtn.addEventListener(
-        "click",
-        () => {
-    
-        if (currentScale <= 0.4)
-            return;
-    
-        currentScale -= 0.2;
-    
-        renderAllPages();
-    });
-    
-    let isDragging = false;
-    
-    let startX, startY;
-    
-    let scrollLeft, scrollTop;
-    
-    pdfContainer.addEventListener(
-        "mousedown",
-        e => {
-    
-        isDragging = true;
-    
-        startX =
-            e.pageX -
-            pdfContainer.offsetLeft;
-    
-        startY =
-            e.pageY -
-            pdfContainer.offsetTop;
-    
-        scrollLeft =
-            pdfContainer.scrollLeft;
-    
-        scrollTop =
-            pdfContainer.scrollTop;
-    });
-    
-    pdfContainer.addEventListener(
-        "mouseleave",
-        () => {
-    
-        isDragging = false;
-    });
-    
-    pdfContainer.addEventListener(
-        "mouseup",
-        () => {
-    
-        isDragging = false;
-    });
-    
-    pdfContainer.addEventListener(
-        "mousemove",
-        e => {
-    
-        if (!isDragging)
-            return;
-    
-        e.preventDefault();
-    
-        const x =
-            e.pageX -
-            pdfContainer.offsetLeft;
-    
-        const y =
-            e.pageY -
-            pdfContainer.offsetTop;
-    
-        const walkX =
-            (x - startX);
-    
-        const walkY =
-            (y - startY);
-    
-        pdfContainer.scrollLeft =
-            scrollLeft - walkX;
-    
-        pdfContainer.scrollTop =
-            scrollTop - walkY;
-    });
-    
-    generateBtn.addEventListener(
-        "click",
-        () => {
-    
-        const raw =
-            document
-            .getElementById("answerKey")
-            .value;
-            parseAnswerKey(raw);
-    
-            function parseAnswerKey(raw) {
-
         answerMap = {};
-
+    
         raw = raw
-
-            // normalize unicode
+    
             .replace(/В/g, "B")
             .replace(/С/g, "C")
-
-            // normalize separators
+    
             .replace(/[:\-]/g, " ")
-
-            // remove extra commas
-            .replace(/,+/g, ",")
-
-            // collapse spaces
-            .replace(/\s+/g, " ");
-
+    
+            .replace(/\s+/g, " ")
+    
+            .trim();
+    
         /*
-            Supports:
-
-            1. B
-            1 B
-            Q1 B
-            Q1 (B)
-            1) B
-            74.A,B
-            75 B,C,D
+        SUPPORTED FORMATS:
+    
+        1. B
+        1 B
+        Q1 B
+        Q1 (B)
+    
+        74.A,B
+        75 B,C,D
+    
+        CUSTOM MARKING:
+    
+        12 A +2 -1
+        74 A,B +4 -2
+    
         */
-
+    
         const regex =
-            /Q?\s*(\d+)\s*[.)]?\s*\(?([A-D](?:\s*,\s*[A-D])*)\)?/gi;
-
+            /Q?\s*(\d+)\s*[.)]?\s*\(?([A-D](?:\s*,\s*[A-D])*)\)?(?:\s*\+(\d+))?(?:\s*(-\d+))?/gi;
+    
         let match;
-
+    
         while ((match = regex.exec(raw)) !== null) {
-
+    
             const qNo =
                 parseInt(match[1]);
-
-            const answer =
+    
+            const answers =
                 match[2]
                 .replace(/\s/g, "")
-                .toUpperCase();
-
-            answerMap[qNo] = answer;
+                .split(",");
+    
+            const isMultiple =
+                answers.length > 1;
+    
+            const correctMarks =
+                match[3]
+                ? parseFloat(match[3])
+                : (
+                    isMultiple
+                    ? 4
+                    : 4
+                );
+    
+            const wrongMarks =
+                match[4]
+                ? parseFloat(match[4])
+                : (
+                    isMultiple
+                    ? -2
+                    : -1
+                );
+    
+            answerMap[qNo] = {
+    
+                answers,
+    
+                type:
+                    isMultiple
+                    ? "multiple"
+                    : "single",
+    
+                correctMarks,
+    
+                wrongMarks
+            };
         }
-
+    
         return answerMap;
-        }
+    }
     
-        if (
-            Object.keys(answerMap).length === 0
-        ) {
     
-            alert(
-                "Invalid answer key."
-            );
     
-            return;
-        }
-    
-        generateQuestions();
-    
-        setupPanel.classList.add(
-            "hidden"
-        );
-    
-        workspace.classList.remove(
-            "hidden"
-        );
-    
-        floatingTimer.classList.remove(
-            "hidden"
-        );
-    
-        startTimer();
-    });
+    /*
+    ========================================
+    GENERATE QUESTIONS
+    ========================================
+    */
     
     function generateQuestions() {
     
@@ -902,6 +723,9 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
     
         sortedQuestions.forEach(qNo => {
     
+            const question =
+                answerMap[qNo];
+    
             const card =
                 document.createElement("div");
     
@@ -912,7 +736,16 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
                 qNo;
     
             card.innerHTML = `
-                <h3>Q${qNo}</h3>
+                <h3>
+                    Q${qNo}
+    
+                    ${
+                        question.type === "multiple"
+                        ? '<span class="multi-tag">MCQ</span>'
+                        : ""
+                    }
+    
+                </h3>
     
                 <div class="options">
     
@@ -929,6 +762,8 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
                     ".option-btn"
                 );
     
+            userAnswers[qNo] = [];
+    
             buttons.forEach(btn => {
     
                 btn.addEventListener(
@@ -937,37 +772,62 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
     
                     if (submitted) return;
     
-                    const current =
-                        userAnswers[qNo];
-    
-                    if (
-                        current ===
-                        btn.textContent
-                    ) {
-    
-                        delete userAnswers[qNo];
-    
-                        btn.classList.remove(
-                            "selected"
-                        );
-    
-                        updateStats();
-    
-                        return;
-                    }
-    
-                    userAnswers[qNo] =
+                    const val =
                         btn.textContent;
     
-                    buttons.forEach(b =>
-                        b.classList.remove(
-                            "selected"
-                        )
-                    );
+                    /*
+                    SINGLE CORRECT
+                    */
     
-                    btn.classList.add(
-                        "selected"
-                    );
+                    if (
+                        question.type === "single"
+                    ) {
+    
+                        userAnswers[qNo] = [val];
+    
+                        buttons.forEach(b =>
+                            b.classList.remove(
+                                "selected"
+                            )
+                        );
+    
+                        btn.classList.add(
+                            "selected"
+                        );
+                    }
+    
+                    /*
+                    MULTIPLE CORRECT
+                    */
+    
+                    else {
+    
+                        const current =
+                            userAnswers[qNo];
+    
+                        if (
+                            current.includes(val)
+                        ) {
+    
+                            userAnswers[qNo] =
+                                current.filter(
+                                    x => x !== val
+                                );
+    
+                            btn.classList.remove(
+                                "selected"
+                            );
+                        }
+    
+                        else {
+    
+                            userAnswers[qNo].push(val);
+    
+                            btn.classList.add(
+                                "selected"
+                            );
+                        }
+                    }
     
                     updateStats();
                 });
@@ -977,90 +837,51 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
         });
     }
     
+    
+    
+    /*
+    ========================================
+    STATS
+    ========================================
+    */
+    
     function updateStats() {
+    
+        let attempted = 0;
+    
+        Object.values(userAnswers)
+        .forEach(ans => {
+    
+            if (ans.length > 0)
+                attempted++;
+        });
     
         document.getElementById(
             "attemptedCount"
         ).textContent =
-            Object.keys(userAnswers).length;
+            attempted;
     }
     
-    function startTimer() {
     
-        const mins =
-            parseInt(
-                document.getElementById(
-                    "timerMinutes"
-                ).value
-            );
     
-        remainingSeconds =
-            mins * 60;
-    
-        updateTimerDisplay();
-    
-        clearInterval(timerInterval);
-    
-        timerInterval =
-            setInterval(() => {
-    
-            if (timerPaused) return;
-    
-            remainingSeconds--;
-    
-            updateTimerDisplay();
-    
-            if (
-                remainingSeconds <= 0
-            ) {
-    
-                clearInterval(
-                    timerInterval
-                );
-    
-                alert(
-                    "Time ended. Auto submitting."
-                );
-    
-                submitTest();
-            }
-    
-        },1000);
-    }
-    
-    pauseTimerBtn.addEventListener(
-        "click",
-        () => {
-    
-        timerPaused =
-            !timerPaused;
-    
-        pauseTimerBtn.textContent =
-            timerPaused
-            ? "Resume"
-            : "Pause";
-    });
-    
-    function updateTimerDisplay() {
-    
-        const mins =
-            Math.floor(
-                remainingSeconds / 60
-            );
-    
-        const secs =
-            remainingSeconds % 60;
-    
-        document.getElementById(
-            "timerText"
-        ).textContent =
-            `${String(mins).padStart(2,"0")}:${String(secs).padStart(2,"0")}`;
-    }
+    /*
+    ========================================
+    SUBMIT TEST
+    ========================================
+    */
     
     submitBtn.addEventListener(
         "click",
         submitTest
     );
+    
+    function arraysEqual(a,b) {
+    
+        return (
+            a.length === b.length &&
+            a.every(v => b.includes(v))
+        );
+    }
     
     function submitTest() {
     
@@ -1070,71 +891,69 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
     
         clearInterval(timerInterval);
     
-        const correctMarks =
-            parseFloat(
-                document.getElementById(
-                    "correctMarks"
-                ).value
-            );
-    
-        const wrongMarks =
-            parseFloat(
-                document.getElementById(
-                    "wrongMarks"
-                ).value
-            );
-    
-        const skipMarks =
-            parseFloat(
-                document.getElementById(
-                    "skipMarks"
-                ).value
-            );
-    
         let score = 0;
     
         let correct = 0;
+    
         let wrong = 0;
+    
         let skipped = 0;
     
         Object.keys(answerMap)
         .forEach(q => {
     
-            const correctAnswer =
+            const question =
                 answerMap[q];
     
-            const userAnswer =
-                userAnswers[q];
+            const correctAnswers =
+                question.answers;
+    
+            const user =
+                userAnswers[q] || [];
     
             const card =
                 document.querySelector(
                     `[data-question="${q}"]`
                 );
     
-            if (!userAnswer) {
+            /*
+            SKIPPED
+            */
+    
+            if (user.length === 0) {
     
                 skipped++;
     
-                score += skipMarks;
-    
+                return;
             }
     
-            else if (
-                userAnswer ===
-                correctAnswer
+            /*
+            EXACT MATCH
+            */
+    
+            if (
+                arraysEqual(
+                    user,
+                    correctAnswers
+                )
             ) {
     
                 correct++;
     
-                score += correctMarks;
-    
+                score +=
+                    question.correctMarks;
             }
+    
+            /*
+            WRONG
+            */
     
             else {
     
                 wrong++;
     
-                score += wrongMarks;
+                score +=
+                    question.wrongMarks;
     
                 card.classList.add(
                     "wrong-glow"
@@ -1185,6 +1004,14 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
         );
     }
     
+    
+    
+    /*
+    ========================================
+    HIGHLIGHT ANSWERS
+    ========================================
+    */
+    
     function highlightAnswers() {
     
         const cards =
@@ -1197,8 +1024,14 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
             const qNo =
                 card.dataset.question;
     
-            const correctAnswer =
+            const question =
                 answerMap[qNo];
+    
+            const correctAnswers =
+                question.answers;
+    
+            const user =
+                userAnswers[qNo] || [];
     
             const buttons =
                 card.querySelectorAll(
@@ -1212,22 +1045,29 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
     
                 btn.disabled = true;
     
+                /*
+                CORRECT OPTIONS
+                */
+    
                 if (
-                    val ===
-                    correctAnswer
+                    correctAnswers.includes(val)
                 ) {
+    
                     btn.classList.add(
                         "correct"
                     );
                 }
     
+                /*
+                WRONG USER OPTIONS
+                */
+    
                 if (
-                    val ===
-                    userAnswers[qNo]
+                    user.includes(val)
                     &&
-                    val !==
-                    correctAnswer
+                    !correctAnswers.includes(val)
                 ) {
+    
                     btn.classList.add(
                         "wrong"
                     );
@@ -1236,6 +1076,63 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
         });
     }
     
+    
+    
+    /*
+    ========================================
+    GENERATE BUTTON
+    ========================================
+    */
+    
+    generateBtn.addEventListener(
+        "click",
+        () => {
+    
+        const raw =
+            document
+            .getElementById(
+                "answerKey"
+            )
+            .value;
+    
+        parseAnswerKey(raw);
+    
+        if (
+            Object.keys(answerMap).length === 0
+        ) {
+    
+            alert(
+                "Invalid answer key."
+            );
+    
+            return;
+        }
+    
+        generateQuestions();
+    
+        setupPanel.classList.add(
+            "hidden"
+        );
+    
+        workspace.classList.remove(
+            "hidden"
+        );
+    
+        floatingTimer.classList.remove(
+            "hidden"
+        );
+    
+        startTimer();
+    });
+    
+    
+    
+    /*
+    ========================================
+    RESET
+    ========================================
+    */
+    
     resetBtn.addEventListener(
         "click",
         () => {
@@ -1243,7 +1140,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
         location.reload();
     });
     
-</script>
+    </script>
 
 </body>
 </html>
