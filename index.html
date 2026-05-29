@@ -595,6 +595,29 @@ let currentScale = 1.2;
 
 let totalPages = 1;
 
+let testInProgress = false;
+
+/*
+========================================
+TAB CLOSE PROTECTION
+========================================
+*/
+
+window.addEventListener(
+    "beforeunload",
+    e => {
+
+    if (
+        !testInProgress ||
+        submitted
+    ) {
+        return;
+    }
+
+    e.preventDefault();
+
+    e.returnValue = "";
+});
 
 
 /*
@@ -746,6 +769,7 @@ let isDragging = false;
 let startX, startY;
 
 let scrollLeft, scrollTop;
+
 
 pdfContainer.addEventListener(
     "mousedown",
@@ -1196,6 +1220,8 @@ function submitTest() {
 
     submitted = true;
 
+    testInProgress = false;
+
     clearInterval(timerInterval);
 
     const skipMarks =
@@ -1417,6 +1443,8 @@ generateBtn.addEventListener(
     }
 
     generateQuestions();
+
+    testInProgress = true;
 
     setupPanel.classList.add(
         "hidden"
